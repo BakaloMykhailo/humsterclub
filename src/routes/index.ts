@@ -125,6 +125,21 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 		}
 	});
 
+	bot.command('listAllStudents', async (ctx) => {
+		const students = await studentService.getAllStudents();
+
+		if (!students || students.length === 0) {
+			return ctx.reply('No students found.');
+		}
+
+		const studentList = students.map((student) => {
+			return `@${student.username} (${student.name}) - ${student.coins} coins `;
+		}
+		).join('\n');
+
+		return ctx.reply(`List of all students:\n${studentList}`);
+	});
+
 	// Help command
 	bot.command('help', async (ctx) => {
 		const telegramId = ctx.from?.id.toString();

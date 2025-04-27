@@ -76,4 +76,21 @@ export class StudentService {
       return null;
     }
 	}
+
+	async getAllStudents(): Promise<Student[] | null> {
+		const list = await this.kv.list({ limit: 100 });
+
+		const studentsArray = await Promise.all(
+			list.keys.map(async (key) => {
+				const value = await this.kv.get(key.name);
+				return value ? [key.name, JSON.parse(value)] : null;
+			})
+		);
+
+		const students = Object.fromEntries(
+			studentsArray.filter((entry): entry is [string, any] => entry !== null)
+		);
+
+    return Object.values(students) as Student[];
+	}
 }
