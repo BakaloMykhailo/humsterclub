@@ -18,14 +18,10 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 		const args = ctx.message?.text?.split(' ').slice(1) || [];
 
 		if (args.length < 2) {
-			return ctx.reply('Usage: /register @username Student Full Name');
+			return ctx.reply('Usage: /register username Student Full Name');
 		}
 
 		let username = args[0];
-		// Ensure username has @ prefix
-		if (!username.startsWith('@')) {
-			return ctx.reply('Please specify a valid username with @ prefix, e.g., /register @username Student Name');
-		}
 
 		// Get the student's name (everything after the username)
 		const name = args.slice(1).join(' ');
@@ -61,14 +57,10 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 		const args = ctx.message?.text?.split(' ').slice(1) || [];
 
 		if (args.length < 2) {
-			return ctx.reply('Usage: /addcoins @username [amount]');
+			return ctx.reply('Usage: /addcoins username [amount]');
 		}
 
 		let username = args[0];
-		// Ensure username has @ prefix
-		if (!username.startsWith('@')) {
-			return ctx.reply('Please specify a valid username with @ prefix, e.g., /addcoins @username 10');
-		}
 
 		const amountStr = args[1];
 		const amount = parseInt(amountStr, 10);
@@ -107,10 +99,6 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 			// If username is provided, check that student's balance
 			if (args.length > 0) {
 				let username = args[0];
-				// Ensure username has @ prefix
-				if (!username.startsWith('@')) {
-					username = '@' + username;
-				}
 
 				const student = await studentService.getStudentByUsername(username);
 
@@ -145,12 +133,12 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 
 		const isAdmin = ADMIN_NAMES.includes(ctx.from?.username ?? '');
 
-		let helpMessage = 'Available commands:\n' + '/balance [@username] - Check coin balance\n';
+		let helpMessage = 'Available commands:\n' + '/balance [username] - Check coin balance\n';
 
 		if (isAdmin) {
 			helpMessage +=
-				'/register @username Student Name - Register a new student\n' +
-				'/addcoins @username amount - Add coins to a student\n';
+				'/register username Student Name - Register a new student\n' +
+				'/addcoins username amount - Add coins to a student\n';
 		}
 
 		helpMessage += '/help - Show this help message';

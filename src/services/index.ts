@@ -1,5 +1,5 @@
 export interface Student {
-  username: string;  // Always includes the @ symbol
+  username: string; // wuthout @ symbol
   name: string;
   coins: number;
   telegramId?: string;  // Optional since admin might register users who haven't used the bot
@@ -14,11 +14,6 @@ export class StudentService {
 
   async getStudentByUsername(username: string): Promise<Student | null> {
     try {
-      // Ensure username has @ prefix
-      if (!username.startsWith('@')) {
-        username = '@' + username;
-      }
-
       const student = await this.kv.get(username);
       return student ? JSON.parse(student) : null;
     } catch (error) {
@@ -28,11 +23,6 @@ export class StudentService {
   }
 
   async registerStudent(username: string, name: string, telegramId?: string): Promise<Student> {
-    // Ensure username has @ prefix
-    if (!username.startsWith('@')) {
-      username = '@' + username;
-    }
-
     const student: Student = {
       username,
       name,
@@ -51,11 +41,6 @@ export class StudentService {
   }
 
   async addCoins(username: string, amount: number): Promise<Student | null> {
-    // Ensure username has @ prefix
-    if (!username.startsWith('@')) {
-      username = '@' + username;
-    }
-
     const student = await this.getStudentByUsername(username);
 
     if (!student) {
