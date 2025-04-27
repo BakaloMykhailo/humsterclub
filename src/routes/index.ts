@@ -26,7 +26,7 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 		if (isAdmin) {
 			helpMessage += '/register username Student Name - Register a new student\n' +
 				'/addcoins username amount - Add coins to a student\n' +
-				'/removeStudent username - Remove a student\n' +
+				'/removeStudent username - Remove a student\n';
 		}
 
 		helpMessage += '/help - Show this help message';
