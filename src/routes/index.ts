@@ -138,6 +138,8 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 
 		const isAdmin = ADMIN_NAMES.includes(ctx.from?.username ?? '');
 
+		console.log('Is admin:', isAdmin);
+
 		let helpMessage = 'Available commands:\n' + '/balance [username] - Check coin balance\n';
 
 		if (isAdmin) {
