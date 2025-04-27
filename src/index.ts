@@ -21,15 +21,22 @@ app.post('/webhook', async (c) => {
 	// Explicitly initialize the bot
 	await bot.init();
 
+	console.log('Webhook received:', c.req);
+
   // Initialize student service
   const studentService = new StudentService(STUDENTS);
+
+
+	console.log('Student service initialized:', studentService);
 
   // Set up commands through router
   studentRouter(bot, studentService);
 
   // Process the update
   try {
+		console.log('Processing update...');
     const update = await c.req.json();
+		console.log('Update:', update);
     await bot.handleUpdate(update);
   } catch (error) {
     console.error('Error processing update:', error);
