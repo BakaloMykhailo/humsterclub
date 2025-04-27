@@ -1,0 +1,84 @@
+export interface Student {
+  username: string;  // Always includes the @ symbol
+  name: string;
+  coins: number;
+  telegramId?: string;  // Optional since admin might register users who haven't used the bot
+}
+
+export class StudentService {
+  private kv: KVNamespace;
+
+  constructor(kv: KVNamespace) {
+    this.kv = kv;
+  }
+
+  async getStudentByUsername(username: string): Promise<Student | null> {
+    try {
+      // Ensure username has @ prefix
+      if (!username.startsWith('@')) {
+        username = '@' + username;
+      }
+
+      const student = await this.kv.get(username);
+      return student ? JSON.parse(student) : null;
+    } catch (error) {
+      console.error('Error fetching student:', error);
+      return null;
+    }
+  }
+
+  async registerStudent(username: string, name: string, telegramId?: string): Promise<Student> {
+    // Ensure username has @ prefix
+    if (!username.startsWith('@')) {
+      username = '@' + username;
+    }
+
+    const student: Student = {
+      username,
+      name,
+      coins: 0,
+      telegramId
+    };
+
+    await this.kv.put(username, JSON.stringify(student));
+
+    // Create an index by telegramId for easy lookup if provided
+    if (telegramId) {
+      await this.kv.put(`telegram:${telegramId}`, username);
+    }
+
+    return student;
+  }
+
+  async addCoins(username: string, amount: number): Promise<Student | null> {
+    // Ensure username has @ prefix
+    if (!username.startsWith('@')) {
+      username = '@' + username;
+    }
+
+    const student = await this.getStudentByUsername(username);
+
+    if (!student) {
+      return null;
+    }
+
+    student.coins += amount;
+    await this.kv.put(student.username, JSON.stringify(student));
+    return student;
+  }
+
+  async getStudentByTelegramId(telegramId: string): Promise<Student | null> {
+    try {
+      const username = await this.kv.get(`telegram:${telegramId}`);
+
+      if (!username) {
+        return null;
+      }
+
+      return await this.getStudentByUsername(username);
+    } catch (error) {
+      console.error('Error fetching student by Telegram ID:', error);
+      return null;
+    }
+  }
+}

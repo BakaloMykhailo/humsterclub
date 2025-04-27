@@ -1,18 +1,38 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Bind resources to your worker in `wrangler.jsonc`. After adding bindings, a type definition for the
- * `Env` object can be regenerated with `npm run cf-typegen`.
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
 
-export default {
-	async fetch(request, env, ctx): Promise<Response> {
-		return new Response('Hello World!');
-	},
-} satisfies ExportedHandler<Env>;
+// src/index.ts
+import { Hono } from 'hono';
+import { Bot } from 'grammy';
+import { studentRouter } from './routes';
+import { StudentService } from './services';
+
+interface Env {
+  STUDENTS: KVNamespace;
+  TELEGRAM_API_KEY: string;
+}
+
+const app = new Hono<{ Bindings: Env }>();
+
+app.post('/webhook', async (c) => {
+  const { TELEGRAM_API_KEY, STUDENTS } = c.env;
+
+  // Initialize bot with token from environment
+  const bot = new Bot(TELEGRAM_API_KEY);
+
+  // Initialize student service
+  const studentService = new StudentService(STUDENTS);
+
+  // Set up commands through router
+  studentRouter(bot, studentService);
+
+  // Process the update
+  try {
+    const update = await c.req.json();
+    await bot.handleUpdate(update);
+  } catch (error) {
+    console.error('Error processing update:', error);
+  }
+
+  return c.json({ status: 'success' });
+});
+
+export default app;
