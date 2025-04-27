@@ -4,6 +4,9 @@ compatibility_date = "2024-04-27"
 account_id = "28af37f579cc8247db9db7c2e46ba369"
 workers_dev = true
 
+[observability]
+enabled = true
+
 [[kv_namespaces]]
 binding = "STUDENTS"
 id = "58dd3b2dd28c446393dd4d6ac5d74969"
