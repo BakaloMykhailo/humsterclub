@@ -18,8 +18,15 @@ app.post('/webhook', async (c) => {
   // Initialize bot with token from environment
   const bot = new Bot(TELEGRAM_API_KEY);
 
+	console.log('Bot initialized with token:', TELEGRAM_API_KEY);
+
 	// Explicitly initialize the bot
 	await bot.init();
+
+	bot.on('message', (ctx) => {
+		console.log('Unhandled message:', ctx.message?.text);
+		ctx.reply('Unknown command. Type /help to see available commands.');
+	});
 
 	console.log('Webhook received:', c.req);
 
