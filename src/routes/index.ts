@@ -3,11 +3,6 @@ import { StudentService } from '../services';
 import { ADMIN_NAMES } from '../../config';
 
 export function studentRouter(bot: Bot, studentService: StudentService) {
-	// Admin-only command to register a student
-
-	console.log('Registering student router...');
-	console.log('Bot:', bot);
-	console.log('Student Service:', studentService);
 	bot.command('register', async (ctx) => {
 		const telegramId = ctx.from?.id.toString();
 
@@ -103,8 +98,11 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 			// If username is provided, check that student's balance
 			if (args.length > 0) {
 				let username = args[0];
+				let student = await studentService.getStudentByUsername(username);
 
-				const student = await studentService.getStudentByUsername(username);
+				if (!student) {
+					student = await studentService.getStudentByName(username);
+				}
 
 				if (!student) {
 					return ctx.reply(`Student ${username} not found.`);
@@ -129,7 +127,6 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 
 	// Help command
 	bot.command('help', async (ctx) => {
-		console.log('Help command triggered');
 		const telegramId = ctx.from?.id.toString();
 
 		if (!telegramId) {
@@ -137,8 +134,6 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 		}
 
 		const isAdmin = ADMIN_NAMES.includes(ctx.from?.username ?? '');
-
-		console.log('Is admin:', isAdmin);
 
 		let helpMessage = 'Available commands:\n' + '/balance [username] - Check coin balance\n';
 
@@ -150,18 +145,11 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 
 		helpMessage += '/help - Show this help message';
 
-		try {
-			await ctx.reply(helpMessage);
-		console.log('Help message sent successfully');
-		} catch (error) {
-			console.error('Error sending help message:', error);
-		}
-
-
+		return ctx.reply(helpMessage);
 	});
 
 	// Handle unknown commands
 	bot.on('message', (ctx) => {
-		ctx.reply('Unknown command. Type /help to see available commands.');
+		return ctx.reply('Unknown command. Type /help to see available commands.');
 	});
 }

@@ -66,4 +66,14 @@ export class StudentService {
       return null;
     }
   }
+
+	async getStudentByName(name: string): Promise<Student | null> {
+    try {
+      const student = await this.kv.get(name);
+      return student ? JSON.parse(student) : null;
+    } catch (error) {
+      console.error('Error fetching student:', error);
+      return null;
+    }
+	}
 }
