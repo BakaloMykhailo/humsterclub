@@ -34,7 +34,7 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 
 			// Register new student
 			const student = await studentService.registerStudent(username, name);
-			return ctx.reply(`Successfully registered ${student.username} (${student.name}). Initial balance: ${student.coins} coins.`);
+			return ctx.reply(`Successfully registered @${student.username} (${student.name}). Initial balance: ${student.coins} coins.`);
 		} catch (error) {
 			console.error('Error registering student:', error);
 			return ctx.reply('Failed to register student. Please try again later.');
@@ -77,7 +77,7 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 			}
 
 			return ctx.reply(
-				`Successfully added ${amount} coins to ${updatedStudent.username} (${updatedStudent.name}). New balance: ${updatedStudent.coins} coins.`
+				`Successfully added ${amount} coins to @${updatedStudent.username} (${updatedStudent.name}). New balance: ${updatedStudent.coins} coins.`
 			);
 		} catch (error) {
 			console.error('Error adding coins:', error);
