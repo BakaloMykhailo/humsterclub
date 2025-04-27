@@ -18,6 +18,9 @@ app.post('/webhook', async (c) => {
   // Initialize bot with token from environment
   const bot = new Bot(TELEGRAM_API_KEY);
 
+	// Explicitly initialize the bot
+	await bot.init();
+
   // Initialize student service
   const studentService = new StudentService(STUDENTS);
 
