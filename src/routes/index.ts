@@ -150,7 +150,14 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 
 		helpMessage += '/help - Show this help message';
 
-		ctx.reply(helpMessage);
+		try {
+			await ctx.reply(helpMessage);
+		console.log('Help message sent successfully');
+		} catch (error) {
+			console.error('Error sending help message:', error);
+		}
+
+
 	});
 
 	// Handle unknown commands
