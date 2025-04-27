@@ -12,7 +12,18 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 
 		const isAdmin = ADMIN_NAMES.includes(ctx.from?.username ?? '');
 
-		let helpMessage = 'Available commands:\n' + '/balance [username] - Check coin balance\n';
+		let helpMessage = `Welcome to the Hamster Club! 🐹🎉\n
+			Hi there, young explorer!\n
+			I’m your friendly Hamster Bot, here to make learning English even more fun! 🎈\n\n
+
+			🌟 Every time you practice, learn, or help your friends, you’ll earn Hamster Coins!\n
+			🌟 Save your coins, trade them for cool rewards, and become a Hamster Hero! 🏆\n\n
+
+			Let's start our adventure together — your English skills and your coin collection are about to grow! 🚀\n\n
+
+			You can ask any question  our main teacher, @oksanaryzhova. \n\n\n\n`;
+
+		helpMessage += 'Available commands:\n' + '/balance [username] - Check coin balance\n';
 
 		if (isAdmin) {
 			helpMessage +=
