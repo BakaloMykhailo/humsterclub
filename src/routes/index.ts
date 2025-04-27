@@ -4,6 +4,10 @@ import { ADMIN_NAMES } from '../../config';
 
 export function studentRouter(bot: Bot, studentService: StudentService) {
 	// Admin-only command to register a student
+
+	console.log('Registering student router...');
+	console.log('Bot:', bot);
+	console.log('Student Service:', studentService);
 	bot.command('register', async (ctx) => {
 		const telegramId = ctx.from?.id.toString();
 
@@ -125,6 +129,7 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 
 	// Help command
 	bot.command('help', async (ctx) => {
+		console.log('Help command triggered');
 		const telegramId = ctx.from?.id.toString();
 
 		if (!telegramId) {
