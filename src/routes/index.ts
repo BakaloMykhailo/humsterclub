@@ -3,6 +3,30 @@ import { StudentService } from '../services';
 import { ADMIN_NAMES } from '../../config';
 
 export function studentRouter(bot: Bot, studentService: StudentService) {
+	bot.command('start', async (ctx) => {
+		const telegramId = ctx.from?.id.toString();
+
+		if (!telegramId) {
+			return ctx.reply('Could not identify your Telegram account.');
+		}
+
+		const isAdmin = ADMIN_NAMES.includes(ctx.from?.username ?? '');
+
+		let helpMessage = 'Available commands:\n' + '/balance [username] - Check coin balance\n';
+
+		if (isAdmin) {
+			helpMessage +=
+				'/register username Student Name - Register a new student\n' +
+				'/addcoins username amount - Add coins to a student\n' +
+				'/removeStudent username - Remove a student\n' +
+				'/listAllStudents - List all students\n';
+		}
+
+		helpMessage += '/help - Show this help message';
+
+		return ctx.reply(helpMessage);
+	});
+
 	bot.command('register', async (ctx) => {
 		const telegramId = ctx.from?.id.toString();
 
