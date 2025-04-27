@@ -22,6 +22,10 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 
 		let username = args[0];
 
+		if (username.startsWith('@')) {
+			username = username.slice(1); // Remove '@' if present
+		}
+
 		// Get the student's name (everything after the username)
 		const name = args.slice(1).join(' ');
 
@@ -138,6 +142,29 @@ export function studentRouter(bot: Bot, studentService: StudentService) {
 		).join('\n');
 
 		return ctx.reply(`List of all students:\n${studentList}`);
+	});
+
+	bot.command('removeStudent' , async (ctx) => {
+		const args = ctx.message?.text?.split(' ').slice(1) || [];
+		 const username = args[0];
+
+		if (!username) {
+			return ctx.reply('Usage: /removeStudent username');
+		}
+
+		if (!ADMIN_NAMES.includes(ctx.from?.username ?? '')) {
+			return ctx.reply('Sorry, only administrators can remove students.');
+		}
+
+		try {
+			const resultMessage = await studentService.removeStudent(username);
+
+			return ctx.reply(resultMessage);
+		} catch (error) {
+			console.error('Error removing student:', error);
+			return ctx.reply('Failed to remove student. Please try again later.');
+		}
+
 	});
 
 	// Help command

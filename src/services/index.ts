@@ -40,6 +40,22 @@ export class StudentService {
     return student;
   }
 
+  async removeStudent(username: string): Promise<string> {
+    try {
+      const student = await this.getStudentByUsername(username);
+
+      if (!student) {
+        return `Student ${username} not found.`;
+      }
+
+      await this.kv.delete(username);
+      return `Successfully removed @${student.username} (${student.name}).`;
+    } catch (error) {
+      console.error('Error removing student:', error);
+      return `Error occurred while removing student ${username}.`;
+    }
+  }
+
   async addCoins(username: string, amount: number): Promise<Student | null> {
     const student = await this.getStudentByUsername(username);
 
